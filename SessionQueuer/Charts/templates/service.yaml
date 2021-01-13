@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-session-queuer
+  labels:
+    name: selenium-session-queuer
+    component: "selenium-grid-4"
+spec:
+  selector:
+    app: selenium-session-queuer
+  ports:
+    - name: port1
+      protocol: TCP
+      port: 5559
+      targetPort: 5559

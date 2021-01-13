@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-sessions
+  labels:
+    name: selenium-sessions
+    component: "selenium-grid-4"
+spec:
+  selector:
+    app: selenium-sessions
+  ports:
+    - name: port1
+      protocol: TCP
+      port: 5556
+      targetPort: 5556

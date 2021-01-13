@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-ff-node-deployment
+  labels:
+    app: selenium-ff-node
+    name: selenium-ff-node
+    component: "selenium-grid-4"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: selenium-ff-node
+  template:
+    metadata:
+      labels:
+        app: selenium-ff-node
+        name: selenium-ff-node
+        component: "selenium-grid-4"
+    spec:
+      containers:
+        - name: selenium-ff-node
+          image: selenium/node-firefox:4.0.0-beta-1-prerelease-20210106
+          env:
+            - name: SE_EVENT_BUS_HOST
+              value: "selenium-event-bus"
+            - name: SE_EVENT_BUS_PUBLISH_PORT
+              value: "4442"
+            - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+              value: "4443"
+          ports:
+            - containerPort: 5553
+              protocol: TCP
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+
+      volumes:
+        - name: dshm
+          emptyDir: { "medium": "Memory" }
