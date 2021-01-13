@@ -102,7 +102,7 @@ stages:
         waitForExecution: false
 
     - task: HelmDeploy@0
-      displayName: 'Chrome Node'
+      displayName: 'chrome'
       inputs:
         azureSubscription: Azure
         azureResourceGroup: aksselgrig4test
@@ -115,7 +115,7 @@ stages:
         waitForExecution: false
 
     - task: HelmDeploy@0
-      displayName: 'Chrome Firefox'
+      displayName: 'firefox'
       inputs:
         azureSubscription: Azure
         azureResourceGroup: aksselgrig4test
