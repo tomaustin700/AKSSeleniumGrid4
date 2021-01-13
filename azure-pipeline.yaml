@@ -30,9 +30,9 @@ stages:
       displayName: 'kubectl login'
       inputs:
         connectionType: 'Azure Resource Manager'
-        azureSubscriptionEndpoint: 'AKS'
-        azureResourceGroup: AKS
-        kubernetesCluster: AKS
+        azureSubscriptionEndpoint: 'Azure'
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
         namespace: '$(namespace)'
         command: login
 
