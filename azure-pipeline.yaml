@@ -1,0 +1,129 @@
+trigger:
+- main
+
+stages:
+- stage: Publish
+  jobs:
+  - job: "Publish"
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: $(Agent.BuildDirectory)
+        ArtifactName: drop
+- stage: "Release"
+  variables:
+    namespace: 'ingress-basic'
+  jobs:
+  - job: "Release"
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+    - task: HelmInstaller@0
+      displayName: 'Install Helm'
+      inputs:
+        helmVersion: latest
+
+    - task: Kubernetes@1
+      displayName: 'kubectl login'
+      inputs:
+        connectionType: 'Azure Resource Manager'
+        azureSubscriptionEndpoint: 'AKS'
+        azureResourceGroup: AKS
+        kubernetesCluster: AKS
+        namespace: '$(namespace)'
+        command: login
+
+    - task: HelmDeploy@0
+      displayName: 'event-hub'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/EventBus/Charts'
+        releaseName: 'selenium-event-bus'
+        waitForExecution: false
+
+    - task: HelmDeploy@0
+      displayName: 'sessions'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/Sessions/Charts'
+        releaseName: 'selenium-sessions'
+        waitForExecution: false
+
+    - task: HelmDeploy@0
+      displayName: 'session-queuer'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/SessionQueuer/Charts'
+        releaseName: 'selenium-session-queuer'
+        waitForExecution: false
+
+    - task: HelmDeploy@0
+      displayName: 'distributor'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/Distributor/Charts'
+        releaseName: 'selenium-distributor'
+        waitForExecution: false
+
+    - task: HelmDeploy@0
+      displayName: 'router'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/Router/Charts'
+        releaseName: 'selenium-router'
+        waitForExecution: false
+
+    - task: HelmDeploy@0
+      displayName: 'Chrome Node'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/NodeChrome/Charts'
+        releaseName: 'selenium-chrome-node'
+        waitForExecution: false
+
+    - task: HelmDeploy@0
+      displayName: 'Chrome Firefox'
+      inputs:
+        azureSubscription: Azure
+        azureResourceGroup: aksselgrig4test
+        kubernetesCluster: aksselgrid4
+        namespace: '$(namespace)'
+        command: upgrade
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/NodeFirefox/Charts'
+        releaseName: 'selenium-ff-node'
+        waitForExecution: false
+
