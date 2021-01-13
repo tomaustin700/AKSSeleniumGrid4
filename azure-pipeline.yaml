@@ -2,22 +2,12 @@ trigger:
 - main
 
 stages:
-- stage: Publish
-  jobs:
-  - job: "Publish"
-    pool:
-      vmImage: vs2017-win2016
-    steps:
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact'
-      inputs:
-        PathtoPublish: $(Agent.BuildDirectory)
-        ArtifactName: drop
-- stage: "Release"
+
+- stage: "Deploy"
   variables:
     namespace: 'ingress-basic'
   jobs:
-  - job: "Release"
+  - job: "Deploy"
     pool:
       vmImage: vs2017-win2016
     steps:
@@ -111,7 +101,7 @@ stages:
         command: upgrade
         chartType: FilePath
         chartPath: '$(System.DefaultWorkingDirectory)/NodeChrome/Charts'
-        releaseName: 'selenium-chrome-node'
+        releaseName: 'selenium-node-chrome'
         waitForExecution: false
 
     - task: HelmDeploy@0
@@ -124,6 +114,6 @@ stages:
         command: upgrade
         chartType: FilePath
         chartPath: '$(System.DefaultWorkingDirectory)/NodeFirefox/Charts'
-        releaseName: 'selenium-ff-node'
+        releaseName: 'selenium-node-firefox'
         waitForExecution: false
 
